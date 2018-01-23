@@ -10,8 +10,6 @@ import {GridOptions} from "ag-grid/main";
     templateUrl: './my-grid-application.component.html'
 })
 export class MyGridApplicationComponent<T> {
-  // TODO: Toggle visibility of each column in a single icon w/ function
-  // TODO: Isolate search filter to single icon w/ function
 
   // The description of the grid item
   @Input("gdlDescription")
