@@ -1,59 +1,82 @@
-import {async, ComponentFixture, TestBed} from "@angular/core/testing";
+import { async, ComponentFixture, TestBed } from "@angular/core/testing";
 
-import {AppComponent} from "../app.component";
-import {MyGridApplicationComponent} from "./my-grid-application.component";
-import {AgGridModule} from "ag-grid-angular";
-import {RedComponentComponent} from "../red-component/red-component.component";
+import { AppComponent } from "../app.component";
+import { MyGridApplicationComponent } from "./my-grid-application.component";
+import { AgGridModule } from "ag-grid-angular";
+import { RedComponentComponent } from "../red-component/red-component.component";
+
+interface ISampleGridItem {
+  name: string;
+  value: string;
+}
 
 describe('MyGridApplicationComponent', () => {
-    let component: MyGridApplicationComponent;
-    let fixture: ComponentFixture<MyGridApplicationComponent>;
+  const rowData: ISampleGridItem[] = [
+    {
+      name: "one",
+      value: "Test Sample One"
+    },
+    {
+      name: "two",
+      value: "Test Sample Two"
+    }
+  ];
+  const colDef: any[] = [
+    {
+      headerName: "NAME",
+      field: "name"
+    },
+    {
+      headerName: "DATA",
+      field: "value"
+    }
+  ];
 
-    beforeEach(async(() => {
-        TestBed.configureTestingModule({
-            imports: [
-                AgGridModule.withComponents(
-                    [RedComponentComponent]
-                )
-            ],
-            declarations: [
-                AppComponent, MyGridApplicationComponent, RedComponentComponent
-            ],
-        })
-            .compileComponents();
-    }));
+  let component: MyGridApplicationComponent<ISampleGridItem>;
+  let fixture: ComponentFixture<MyGridApplicationComponent<ISampleGridItem>>;
 
-    beforeEach(() => {
-        fixture = TestBed.createComponent(MyGridApplicationComponent);
-        component = fixture.componentInstance;
-    });
+  beforeEach(async(() => {
+    TestBed.configureTestingModule({
+      imports: [
+        AgGridModule.withComponents(
+          [RedComponentComponent]
+        )
+      ],
+      declarations: [
+        AppComponent, MyGridApplicationComponent, RedComponentComponent
+      ],
+    })
+      .compileComponents();
+  }));
 
-    it('should create', () => {
-        fixture.detectChanges();
+  beforeEach(() => {
+    fixture = TestBed.createComponent(MyGridApplicationComponent);
+    component = fixture.componentInstance;
 
-        expect(component).toBeTruthy();
-    });
+    component.rowData = rowData;
+    component.columnDefinitions = colDef;
+  });
 
-    it('should render title in a h1 tag', async(() => {
-        fixture.detectChanges();
+  it('should create', () => {
+    fixture.detectChanges();
 
-        const compiled = fixture.debugElement.nativeElement;
-        expect(compiled.querySelector('h1').textContent).toContain('Simple ag-Grid Angular Example');
-    }));
+    expect(component).toBeTruthy();
+  });
 
-    it('grid API is not available until  `detectChanges`', () => {
-        expect(component.gridOptions.api).not.toBeTruthy();
-    });
+  it('should render title in a h1 tag', async(() => {
+    fixture.detectChanges();
 
-    it('grid API is available after `detectChanges`', () => {
-        fixture.detectChanges();
-        expect(component.gridOptions.api).toBeTruthy();
-    });
+    const compiled = fixture.debugElement.nativeElement;
+    expect(compiled.querySelector('h1').textContent).toContain('Simple ag-Grid Angular Example');
+  }));
 
-    it('select all button selects all rows', () => {
-        fixture.detectChanges();
-        component.selectAllRows();
-        expect(component.gridOptions.api.getSelectedNodes().length).toEqual(3);
-    });
+  it('grid API is not available until  `detectChanges`', () => {
+    expect(component.gridOptions.api).not.toBeTruthy();
+  });
+
+  it('grid API is available after `detectChanges`', () => {
+    fixture.detectChanges();
+    expect(component.gridOptions.api).toBeTruthy();
+  });
 
 });

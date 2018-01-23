@@ -1,4 +1,6 @@
-import {Component} from "@angular/core";
+import "ag-grid-enterprise"; // import here to apply enterprise-license features
+
+import { Component, Input } from "@angular/core";
 import {RedComponentComponent} from "../red-component/red-component.component";
 
 import {GridOptions} from "ag-grid/main";
@@ -7,33 +9,49 @@ import {GridOptions} from "ag-grid/main";
     selector: 'app-my-grid-application',
     templateUrl: './my-grid-application.component.html'
 })
-export class MyGridApplicationComponent {
-    gridOptions: GridOptions;
-    columnDefs: any[]
-    rowData: any[];
+export class MyGridApplicationComponent<T> {
+  // TODO: Toggle visibility of each column in a single icon w/ function
+  // TODO: Isolate search filter to single icon w/ function
 
-    constructor() {
-        this.gridOptions = <GridOptions>{};
+  // The description of the grid item
+  @Input("gdlDescription")
+  public description;
 
-        this.columnDefs = [
-            {headerName: "Make", field: "make"},
-            {headerName: "Model", field: "model", cellRendererFramework: RedComponentComponent},
-            {headerName: "Price", field: "price"}
-        ];
+  // The row data being passed
+  @Input("gdlRowData")
+  public rowData: T[];
 
-        this.rowData = [
-            {make: "Toyota", model: "Celica", price: 35000},
-            {make: "Ford", model: "Mondeo", price: 32000},
-            {make: "Porsche", model: "Boxter", price: 72000}
-        ]
-    }
+  // The column header definitions
+  @Input("gdlColumnDefinitions")
+  public columnDefinitions: any[];
 
-    onGridReady(params) {
-        params.api.sizeColumnsToFit();
-    }
+  // ag-grid variables
+  public gridApi: any;
 
-    selectAllRows() {
-        this.gridOptions.api.selectAll();
-    }
+  // Grid options need to be both public and defined in the constructor in order to be correctly utilized by unit testing
+  public gridOptions: GridOptions;
+  private gridColumnApi: any;
+  constructor() {
+    this.gridOptions = <GridOptions> {
+    };
+  }
+
+  public ngOnInit(): void {
+    // this.gridOptions = gridDefaultOptions;
+  }
+
+  /**
+   * ag-grid event reference; please do not remove
+   * This runs after ngAftreViewInit, so it is an
+   * additional lifecycle hook specifically for grid
+   *
+   * @param {AgGridEvent} params
+   */
+  public onGridReady(params: any): void {
+    this.gridApi = params.api;
+    this.gridColumnApi = params.columnApi;
+
+    this.gridApi.sizeColumnsToFit();
+  }
 }
 
